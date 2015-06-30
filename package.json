@@ -1,0 +1,35 @@
+{
+  "name": "fsk-argparse",
+  "version": "1.0.0",
+  "description": "'参数解析'",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vrxubo/fsk-argparse.git"
+  },
+  "keywords": [
+    "argumensts",
+    "parse",
+    "args",
+    "argv"
+  ],
+  "author": "xubo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vrxubo/fsk-argparse/issues"
+  },
+  "homepage": "https://github.com/vrxubo/fsk-argparse#readme",
+  "devDependencies": {
+    "mocha": "^2.2.5",
+    "should": "^7.0.1"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "should": "^7.0.1"
+  }
+}
