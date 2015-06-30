@@ -23,94 +23,127 @@ describe('argparse.add', function () {
   });
 });
 describe('argparse.each', function () {
-  it('each·½·¨µÄcallback²ÎÊı±ØĞëÊÇÒ»¸öº¯Êı', function () {
+  it('eachæ–¹æ³•çš„callbackå‚æ•°å¿…é¡»æ˜¯ä¸€ä¸ªå‡½æ•°', function () {
     var argparse = new ArgumentParse();
     (function(){
       argparse.each();
-    }).should.throw('callback ±ØĞëÊÇÒ»¸öº¯Êı');
+    }).should.throw('callback å¿…é¡»æ˜¯ä¸€ä¸ªå‡½æ•°');
   });
 });
 describe('argparse.each', function () {
-  it('²»ÒªÖ±½Ó²Ù×÷Ë½ÓĞ±äÁ¿', function () {
+  it('ä¸è¦ç›´æ¥æ“ä½œç§æœ‰å˜é‡', function () {
     var argparse = new ArgumentParse();
     argparse.add('test');
     argparse.add('test2');
     argparse._keys[1] = {};
     (function(){
       argparse.each(function(o) {});
-    }).should.throw('²»ÒªÖ±½Ó²Ù×÷_keys _indexs');
+    }).should.throw('ä¸è¦ç›´æ¥æ“ä½œ_keys _indexs');
   });
 });
 describe('argparse.get', function () {
-  it('Ã»ÓĞÉèÖÃµÄ²ÎÊıµ±È»»ñÈ¡²»µ½', function () {
+  it('æ²¡æœ‰è®¾ç½®çš„å‚æ•°å½“ç„¶è·å–ä¸åˆ°', function () {
     var argparse = new ArgumentParse();
     (function(){
       argparse.get('test');
-    }).should.throw('ÃûÎªtestµÄ²ÎÊı²»´æÔÚ');
+    }).should.throw('åä¸ºtestçš„å‚æ•°ä¸å­˜åœ¨');
   });
 });
 describe('argparse.get', function () {
-  it('ÉèÖÃµÄ²ÎÊıÊÇÒ»¸ö¶ÔÏó', function () {
+  it('è®¾ç½®çš„å‚æ•°æ˜¯ä¸€ä¸ªå¯¹è±¡', function () {
     var argparse = new ArgumentParse();
     argparse.add('test');
     argparse.get('test').should.be.an.Object;
   });
 });
+describe('argparse.showHelp', function () {
+  it('noError', function () {
+    var argparse = new ArgumentParse();
+    var i = '' ;
+    argparse.add('test',{required: true});
+    (function(){
+      argparse.showHelp();
+    }).should.not.throw();
+  });
+});
+describe('argparse.version', function () {
+  it('noError', function () {
+    var argparse = new ArgumentParse({version:'1.0.0'});
+    (function(){
+      argparse.parse(['-v']);
+    }).should.not.throw();
+  });
+});
 describe('argparse.parse', function () {
-  it('ÎŞĞ§²ÎÊı', function () {
+  it('æ— æ•ˆå‚æ•°', function () {
     var argparse = new ArgumentParse();
     argparse.add('test');
     (function(){
       argparse.parse(['test','testValue', 'valid']);
-    }).should.throw('validÊÇÎŞĞ§µÄ²ÎÊı');
+    }).should.throw('validæ˜¯æ— æ•ˆçš„å‚æ•°');
   });
-});
-describe('argparse.parse', function () {
-  it('ÊÂ¼ş', function (done) {
-    var argparse = new ArgumentParse();
+
+  it('äº‹ä»¶', function (done) {
+    var argparse = new ArgumentParse({
+        done:function(){
+        i.should.be.eql('testValue');
+        done();
+      }
+    });
+    argparse.add('test',{callback: function(args){i = args.test;}});
     var i = '' ;
-    argparse.add('test',{callback: function(args){i = args.test;done();}});
     var obj = argparse.parse(['test', 'testValue']);
-    i.should.be.eql('testValue');
   });
-});
-describe('argparse.parse', function () {
+
   it('defaultValue', function (done) {
-    var argparse = new ArgumentParse();
+    var argparse = new ArgumentParse({
+      done: function(){
+        i.should.be.eql('testValue');
+        done();
+      }
+    });
     var i = '' ;
-    argparse.add('test',{defaultValue: 'testValue', callback: function(args){i = args.test;done();}});
+    argparse.add('test',{defaultValue: 'testValue', callback: function(args){i = args.test;}});
     var obj = argparse.parse();
-    i.should.be.eql('testValue');
   });
-});
-describe('argparse.parse', function () {
-  it('no value will be true, not defaultValue', function () {
-    var argparse = new ArgumentParse();
+
+  it('no value will be true, not defaultValue', function (done) {
+    var argparse = new ArgumentParse({
+      done: function() {
+        i.should.be.true;
+        done();
+      }
+    });
     var i = '' ;
     argparse.add('test',{defaultValue: 'testValue', callback: function(args){i = args.test;}});
     argparse.add('test2');
     var obj = argparse.parse(['test']);
-    i.should.be.true;
+
   });
-});
-describe('argparse.parse', function () {
   it('repeat', function (done) {
-    var argparse = new ArgumentParse();
+    var argparse = new ArgumentParse({
+      done: function() {
+        i.should.be.an.Array;
+        done();
+      }
+    });
     var i = '' ;
-    argparse.add('test',{callback: function(args){i = args.test;done();}});
+    argparse.add('test', {
+      callback: function(args){
+        i = args.test;
+        console.log(123);
+      }
+    });
     var obj = argparse.parse(['test', 'testValue', 'test','test','testValue2']);
-    i.should.be.an.Array;
   });
-});
-describe('argparse.parse', function () {
+
   it('-h', function () {
     var argparse = new ArgumentParse();
     (function(){
       argparse.parse(['-h']);
     }).should.not.throw();
   });
-});
-describe('argparse.parse', function () {
+
   it('dest', function (done) {
     var argparse = new ArgumentParse();
     var i = '' ;
@@ -123,8 +156,7 @@ describe('argparse.parse', function () {
     var obj = argparse.parse(['-s', 'testValue']);
     obj.should.be.have.property('start', 'testValue');
   });
-});
-describe('argparse.parse', function () {
+
   it('required', function () {
     var argparse = new ArgumentParse();
     var i = '' ;
@@ -134,13 +166,45 @@ describe('argparse.parse', function () {
     }).should.throw('test is required');
   });
 });
-describe('argparse.showHelp', function () {
-  it('noError', function () {
-    var argparse = new ArgumentParse();
-    var i = '' ;
-    argparse.add('test',{required: true});
-    (function(){
-      argparse.showHelp();
-    }).should.not.throw();
+
+describe('argparse.parse', function () {
+  it('åŒæ­¥', function () {
+    var result = [];
+    var argparse = new ArgumentParse({sync: true, done: function(){}});
+    argparse.add('test1',{defaultValue: 'testValue1', sort: 3, callback: function(args){result.push(1);}});
+    argparse.add('test2',{defaultValue: 'testValue2', sort: 2, callback: function(args){result.push(2);}});
+    argparse.add('test3',{defaultValue: 'testValue3', sort: 1, callback: function(args){result.push(3);}});
+    var obj = argparse.parse(['test1', 'test2', 'test3']);
+    result.should.be.eql([1,2,3]);
+  });
+  it('åŒæ­¥2', function () {
+    var result = [];
+    var argparse = new ArgumentParse({sync: true, done: function(){}});
+    argparse.add('test1',{defaultValue: 'testValue1', sort: 1, callback: function(args){result.push(1);}});
+    argparse.add('test2',{defaultValue: 'testValue2', sort: 2, callback: function(args){result.push(2);}});
+    argparse.add('test3',{defaultValue: 'testValue3', callback: function(args){result.push(3);}});
+    var obj = argparse.parse(['test1', 'test2', 'test3']);
+    result.should.be.eql([2,1,3]);
+  });
+  it('å¼‚æ­¥', function (done) {
+    var result = [];
+    var argparse = new ArgumentParse({
+      done: function(){
+        result.should.be.length(3);
+        result.should
+        done();
+      }
+    });
+    argparse.add('test1',{
+      defaultValue: 'testValue1',
+      sort: 1,
+      callback: function(args){
+        result.push(1);
+        var start = Date.now();
+      }
+    });
+    argparse.add('test2',{defaultValue: 'testValue2', sort: 2, callback: function(args){result.push(2); }});
+    argparse.add('test3',{defaultValue: 'testValue3', callback: function(args){result.push(3); }});
+    var obj = argparse.parse(['test1', 'test2', 'test3']);
   });
 });

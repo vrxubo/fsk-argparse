@@ -7,7 +7,7 @@
 ## 示例 ##
 
     var ArgumentParser = require('fsk-argparse');
-    var argsParser = new ArgumentParser();
+    var argsParser = new ArgumentParser([options]);
     argsParser.add('-s', {
       dest: 'start',
       desc: '启动服务器',
@@ -18,6 +18,10 @@
       }
     });
     var args = argsParser.parse();
++ options: 可选参数
+    * sync: 是否同步, 默认异步
+    * done: 所有事件完成后的回调
+    * version: 版本号, 支持-v查看版本号
 
 ## add ##
     parser.add(argName[, options]);
@@ -27,6 +31,7 @@
     dest: 参数全名 不填默认为参数名
     desc: 说明
     defaultValue: 默认值
+    sort: 回调函数执行顺序, 按从大到小的顺序执行 3 > 2 > 1这样
     required: 是否必选项 此项设为true之后 无此参数则抛出异常
     callback: 回调函数 参数 args 解析之后的args 与parse方法返回值相同; 此方法在parse解析完成后执行
 ## parse ##
@@ -57,5 +62,30 @@
     >test -s //{start: true, close: null, switch: null}
     >test -s start //{start: 'start', close: null, switch: null}
     >test -c -c close -t //{start: null, close: [true, close], switch; true}
+
+    //同步
+    var ArgumentParser = require('fsk-argparse');
+    var argsParser = new ArgumentParser({sync:true});
+    var result = [];
+    argsParser.add('test2', {
+      sort: 2,
+      callback: function() {
+        result.push(2)
+      }
+    });
+    argsParser.add('test1', {
+      sort: 3,
+      callback: function() {
+        result.push(3)
+      }
+    });
+    argsParser.add('test3', {
+      sort: 1,
+      callback: function() {
+        result.push(1)
+      }
+    });
+    argsParser.parse(); // result = [3, 2, 1]
+
 
 
