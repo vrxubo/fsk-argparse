@@ -1,6 +1,6 @@
 {
   "name": "fsk-argparse",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "'参数解析'",
   "main": "index.js",
   "scripts": {
